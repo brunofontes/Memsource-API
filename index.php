@@ -5,6 +5,7 @@ if (!isset($_SESSION['token'])) {
 }
 
 $resource = getResource($_SESSION['token']);
+// print_r($resource); die();
 echo "<br>\nuserName: {$resource['user']['userName']}";
 echo "<br>\nName: {$resource['user']['firstName']}";
 echo "<br>\nLast name: {$resource['user']['lastName']}";
@@ -16,6 +17,8 @@ echo "<br>\nOrganization: {$resource['organization']['name']}";
 function getResource($access_token)
 {
     $test_api_url = 'https://cloud.memsource.com/web/api2/v1/auth/whoAmI';
+    // $test_api_url = 'https://cloud.memsource.com/web/api2/v1/projects';
+    // $test_api_url = 'https://cloud.memsource.com/web/api2/v1/projects/zFbwYXoMLoa3cJ60Vvldo2?purge=true';
 
     $header = ["Authorization: Bearer {$access_token}"];
 
@@ -25,6 +28,7 @@ function getResource($access_token)
         CURLOPT_HTTPHEADER => $header,
         CURLOPT_SSL_VERIFYPEER => false,
         CURLOPT_RETURNTRANSFER => true
+        // CURLOPT_CUSTOMREQUEST => 'DELETE'   <-- This is how to send a DELETE request
     ]);
     $response = curl_exec($curl);
     curl_close($curl);
