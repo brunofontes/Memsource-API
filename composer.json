@@ -1,10 +1,4 @@
 {
 	"name": "brunofontes/memsource-api",
-	"version": "1.0.0",
-	"repositories": [
-		{
-			"type": "git",
-			"url": "https://github.com/brunofontes/Memsource-API"
-		}
-	]
+	"version": "1.0.0"
 }
