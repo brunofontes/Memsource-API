@@ -1,9 +1,9 @@
 <?php
 session_start();
-$authorize_url = 'https://cloud.memsource.com/web/oauth/authorize';
-$token_url = 'https://cloud.memsource.com/web/oauth/token';
 
 $config = parse_ini_file('config.ini');
+$authorize_url = $config['base_url'] . '/oauth/authorize';
+$token_url = $config['base_url'] . '/oauth/token';
 
 //	callback URL specified when the application was defined--has to match what the application says
 $callback_uri = $config['callbackUri'];
@@ -29,11 +29,8 @@ if (isset($_GET['code'])) {
 function getAuthorizationCode()
 {
     global $authorize_url, $client_id, $callback_uri;
-
     $authorization_redirect_url = $authorize_url . '?response_type=code&client_id=' . $client_id . '&redirect_uri=' . $callback_uri . '&scope=openid';
-
     header('Location: ' . $authorization_redirect_url);
-
     //	if you don't want to redirect
     // echo "Go <a href='$authorization_redirect_url'>here</a>, copy the code, and paste it into the box below.<br /><form action=" . $_SERVER["PHP_SELF"] . " method = 'post'><input type='text' name='authorization_code' /><br /><input type='submit'></form>";
 }
@@ -61,14 +58,9 @@ function getAccessToken($authorization_code)
     curl_close($curl);
 
     if ($response === false) {
-        echo 'Failed';
-        echo curl_error($curl);
-        echo 'Failed';
+        echo 'Failed', curl_error($curl);
     } elseif (isset($objectResponse->error)) {
-        echo 'Error:<br />';
-        echo $authorization_code;
-        echo $response;
+        echo "Error:<br /> $authorization_code $response";
     }
-
     return $objectResponse->access_token;
 }
