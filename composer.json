@@ -1,4 +1,17 @@
 {
 	"name": "brunofontes/memsource-api",
-	"version": "1.0.0"
+	"version": "1.0.0",
+	"description": "A personal memsource api to better understand how it works",
+    "autoload": {
+        "psr-4": {
+            "BrunoFontes\\": "src/",
+            "BrunoFontes\\Memsource\\": "src/"
+        }
+	},
+   "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/brunofontes/Memsource-API"
+		}
+   ]
 }
