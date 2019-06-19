@@ -23,49 +23,72 @@ class Memsource
         return $this->_oauth ?? $this->_oauth = new \BrunoFontes\Memsource\oauth();
     }
 
-    public function get(string $url)
+    /**
+     * Fetch API data using curl
+     *
+     * @param string $method     Should be 'get', 'post', 'jsonPost' or 'download'
+     * @param string $url        The api url
+     * @param array  $parameters Array ['key' => 'value'] of get or post fields or structured array for json requests
+     * @param string $filename   [optional] Specified file in which the download request will be saved
+     * 
+     * @return void
+     */
+    protected function fetch(string $method, string $url, array $parameters, $filename = '')
     {
-        $response = $this->curl($url);
-        return json_decode($response, true);
+        switch ($method) {
+        case 'get':
+            $parameters = http_build_query($parameters);
+            break;
+        case 'post':
+            $parameters = http_build_query($parameters);
+            $setopt = $this->getPostParam($parameters);
+            break;
+        case 'jsonPost':
+            $setopt = $this->getJsonPostParam($parameters);
+            break;
+        case 'download':
+            if (empty($filename)) {
+                throw new Exception("You need to specify a filename to download a file.", 1);
+            }
+            $setopt = $this->getDownloadFileParam($filename) 
+                    + $this->getJsonPostParam($parameters);
+            break;
+        }
+        return $this->curl($url, $setopt);
     }
 
-    protected function apiDownloadFile(string $url, array $postFields, string $filename)
+    private function getDownloadFileParam(string $filename)
     {
         $file = fopen($filename, 'w+');
-        $extraSetopt = [
+        return [
             CURLOPT_FILE => $file,
             CURLOPT_FOLLOWLOCATION => true,
         ];
-        return $this->jsonPost($url, $postFields, $extraSetopt);
     }
 
-    protected function jsonPost(string $url, array $postFields, array $extraSetopt = [], array $extraHeader = [])
+    private function getJsonPostParam(array $postFields)
     {
-        $extraHeader = (['Content-type: application/json'] + $extraHeader);
-        $postFields = json_encode($postFields);
-        $response = $this->post($url, $postFields, [], $extraHeader);
-        return json_decode($response, true);
+        return [
+            CURLOPT_HTTPHEADER => ['Content-type: application/json'],
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($postFields)
+        ];
     }
 
-    protected function post(string $url, string $postFields, array $extraSetopt = [], array $extraHeader = [])
+    private function getPostParam(string $postFields)
     {
-        $extraSetopt = (
-            $extraSetopt + 
-            [
-                CURLOPT_POST => true,
-                CURLOPT_POSTFIELDS => $postFields
-            ]
-        );
-        $response = $this->curl($url, $extraSetopt, $extraHeader);
-        return json_decode($response, true);
+        return [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $postFields
+        ];
     }
 
-    protected function curl(string $url, array $curl_extra_setopt=[], array $extraHeader=[])
+    protected function curl(string $url, array $curl_extra_setopt=[])
     {
         $header = $this->token ? ["Authorization: Bearer {$this->token}"] : [];
         $curl_setopt = [
             CURLOPT_URL => $this->base_url . $url,
-            CURLOPT_HTTPHEADER => ($header + $extraHeader),
+            CURLOPT_HTTPHEADER => ($header + $curl_extra_setopt[CURLOPT_HTTPHEADER]),
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_TIMEOUT => 500,
             CURLOPT_FOLLOWLOCATION => true,

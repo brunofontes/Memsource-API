@@ -22,7 +22,7 @@ class Oauth extends \BrunoFontes\Memsource
      */
     public function getAuthorizationCodeUrl(string $client_id, string $callback_uri)
     {
-        $authorize_url = $this->_url . '/authorize';
+        $authorize_url = $this->base_url . $this->_url . '/authorize';
         return $authorize_url . '?response_type=code&client_id=' . $client_id . '&redirect_uri=' . $callback_uri . '&scope=openid';
     }
 
@@ -32,7 +32,12 @@ class Oauth extends \BrunoFontes\Memsource
         $authorization = base64_encode("$client_id:$client_secret");
         $header = ["Authorization: Basic {$authorization}", 'Content-Type: application/x-www-form-urlencoded'];
         $content = "grant_type=authorization_code&code=$authorization_code&redirect_uri=$callback_uri";
-        $response = $this->post($token_url, $content, [], $header);
+        $params = [
+            CURLOPT_HTTPHEADER => $header,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $content
+        ];
+        $response = $this->curl($token_url, $params);
         if ($respose['error']) {
             throw new Exception("Error getting access token", 1);
         }
