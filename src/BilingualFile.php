@@ -7,7 +7,7 @@
  */
 namespace BrunoFontes\Memsource;
 
-class BilingualFile extends \BrunoFontes\Memsource
+class BilingualFile extends \BrunoFontes\Memsource\BaseApi
 {
     private $_url = '/bilingualFiles';
     
@@ -35,7 +35,7 @@ class BilingualFile extends \BrunoFontes\Memsource
         for ($i = 0; $i < count($groupedJobUids); $i++) {
             $apiReadyArray = $this->_convertUidArrayToApiRequest($groupedJobUids[$i]);
             $filenames[$i] = count($groupedJobUids) > 1?"{$i}_{$filename}":$filename;
-            $filecontent = $this->fetch('jsonPost', $url, $apiReadyArray);
+            $filecontent = $this->fetchApi->fetch('jsonPost', $url, $apiReadyArray);
             $this->_saveIntoFile($filenames[$i], $filecontent);
         }
         return $filenames;
