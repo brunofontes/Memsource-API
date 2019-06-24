@@ -2,3 +2,4 @@ config.ini
 tags
 vendor/
 .php_cs.cache
+*.mxliff
