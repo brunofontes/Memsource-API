@@ -34,7 +34,7 @@ class FetchApi
      *
      * @return void
      */
-    public function fetch(string $method, string $url, array $parameters, $filename = '') : string
+    public function fetch(string $method, string $url, array $parameters = [], $filename = '') : string
     {
         $setopt = [];
         switch ($method) {
