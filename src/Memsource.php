@@ -18,6 +18,7 @@ class Memsource
 {
     private $_oauth;
     private $_bilingualFile;
+    private $_jobs;
     private $_project;
     private $_fetchApi;
 
@@ -37,16 +38,6 @@ class Memsource
     }
 
     /**
-     * Memsource API Project related functions
-     *
-     * @return \BrunoFontes\Memsource\Project
-     */
-    public function project(): \BrunoFontes\Memsource\Project
-    {
-        return $this->_project ?? $this->_project = new \BrunoFontes\Memsource\Project($this->_fetchApi);
-    }
-
-    /**
      * Memsource API BilingualFile related functions
      *
      * @return \BrunoFontes\Memsource\BilingualFile
@@ -54,5 +45,26 @@ class Memsource
     public function bilingualFile(): \BrunoFontes\Memsource\BilingualFile
     {
         return $this->_bilingualFile ?? $this->_bilingualFile = new \BrunoFontes\Memsource\BilingualFile($this->_fetchApi);
+    }
+
+    /**
+     * Memsource API Jobs related functions
+     *
+     * @return \BrunoFontes\Memsource\Jobs
+     */
+    public function jobs(): \BrunoFontes\Memsource\Jobs
+    {
+        return $this->_jobs ?? $this->_jobs = new \BrunoFontes\Memsource\Jobs($this->_fetchApi);
+    }
+
+
+    /**
+     * Memsource API Project related functions
+     *
+     * @return \BrunoFontes\Memsource\Project
+     */
+    public function project(): \BrunoFontes\Memsource\Project
+    {
+        return $this->_project ?? $this->_project = new \BrunoFontes\Memsource\Project($this->_fetchApi);
     }
 }
