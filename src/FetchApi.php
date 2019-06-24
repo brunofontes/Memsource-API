@@ -42,9 +42,12 @@ class FetchApi
             $parameters = http_build_query($parameters);
             $url = $url . ($parameters ? '?'.$parameters : '');
             break;
+        case 'put':
+            $setopt = $this->getPutParam()+$this->getPostParam(implode("", $parameters));
+            break;
         case 'post':
             $parameters = http_build_query($parameters);
-            $setopt = $this->getPostParam($parameters);
+            $setopt = $setopt + $this->getPostParam($parameters);
             break;
         case 'jsonPost':
             $setopt = $this->getJsonPostParam($parameters);
@@ -67,7 +70,7 @@ class FetchApi
         ];
     }
 
-    private function getJsonPostParam(array $postFields)
+    private function getJsonPostParam(array $postFields = [])
     {
         return [
             CURLOPT_HTTPHEADER => ['Content-type: application/json'],
@@ -76,11 +79,19 @@ class FetchApi
         ];
     }
 
-    private function getPostParam(string $postFields)
+    private function getPostParam(string $postFields = '')
     {
         return [
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => $postFields
+        ];
+    }
+
+    private function getPutParam()
+    {
+        return [
+            CURLOPT_HTTPHEADER => ['Content-type: application/octet-stream'],
+            CURLOPT_CUSTOMREQUEST => "PUT"
         ];
     }
 
@@ -99,9 +110,9 @@ class FetchApi
             CURLOPT_TIMEOUT => 500,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_RETURNTRANSFER => true
-        ];
+        ] + $curl_extra_setopt;
         $curl = curl_init();
-        curl_setopt_array($curl, ($curl_setopt + $curl_extra_setopt));
+        curl_setopt_array($curl, $curl_setopt);
         $response = curl_exec($curl);
         curl_close($curl);
         return $response;

@@ -9,7 +9,7 @@ namespace BrunoFontes\Memsource;
 
 class BilingualFile extends \BrunoFontes\Memsource\BaseApi
 {
-    private $_url = '/bilingualFiles';
+    private $_url = '/api2/v1/bilingualFiles';
     
     /**
      * Download one or more bilingual files
@@ -57,14 +57,32 @@ class BilingualFile extends \BrunoFontes\Memsource\BaseApi
         return ['jobs' => $convertedArray];
     }
 
-    private function _saveIntoFile(string $filename, string $filecontent)
+    private function _saveIntoFile(string $filename, string $filecontent): void
     {
         try {
             $f = fopen($filename, 'w+');
             fwrite($f, $filecontent);
             fclose($f);
         } catch (\Exception $e) {
-            throw new Exception("File could not be saved: " . $e->error, 1);
+            throw new \Exception("File could not be saved: {$e->error}", 1);
         }
-   }
+    }
+
+    /**
+     * Upload a bilingual file to Memsource
+     *
+     * @param string $filename The filename to be uploaded
+     * @param array  $params   Any API (HTTP GET) parameters as ['key' => 'value'] format
+     * 
+     * @return string The http request responde from API in json format
+     */
+    public function uploadBilingualFile(string $filename, array $params): string
+    {
+        $urlParams = http_build_query($params);
+        $fileContent = file_get_contents($filename);
+        if ($fileContent === false) {
+            throw new \Exception('File for upload inexistent or invalid', 1);
+        }
+        return $this->fetchApi->fetch('put', $this->_url . "?{$urlParams}", [$fileContent]);
+    }
 }
