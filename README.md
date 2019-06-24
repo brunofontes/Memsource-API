@@ -35,5 +35,22 @@ $token = $memsource->oauth()->getAccessToken($authCode, $client_id, $client_secr
 
 Safely store this `$token` with the related user data and use it on any 
 
+## Project
+
+### Project list
+
+To list all projects...
+
+```php
+$memsource = new \BrunoFontes\Memsource();
+$projectList = $memsource->project()->listProjects;
+```
+
+To use filters, add the API filter as parâmeter:
+
+```php
+$projectList = $memsource->project()->listProjects(['name' => 'Project X']);
+```
+
 ## Bilingual Files
 
