@@ -2,6 +2,13 @@
     "name": "brunofontes/memsource-api",
     "description": "A personal memsource api to better understand how it works",
     "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Bruno F. Fontes",
+            "email": "developer@brunofontes.net"
+        }
+    ],
+    "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
             "BrunoFontes\\": "src/",
