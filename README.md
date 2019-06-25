@@ -96,13 +96,13 @@ $projectList = $memsource->project()->listProjects;
 To use filters, add the API filter as parameter:
 
 ```php
-$projectList = $memsource->project()->listProjects(['name' => 'Project X']);
+$projectList = $memsource->project()->list(['name' => 'Project X']);
 ```
 
 #### Get Project
 
 ```php
-$projectList = $memsource->project()->getProject($projectUid);
+$projectList = $memsource->project()->get($projectUid);
 ```
 
 ### Jobs
@@ -112,7 +112,7 @@ $projectList = $memsource->project()->getProject($projectUid);
 Only projectUid is essencial:
 
 ```php
-$jobs = $memsource->jobs()->listJobs($projectUid, ['count' => true, 'filename' => 'my_file.html']);
+$jobs = $memsource->jobs()->list($projectUid, ['count' => true, 'filename' => 'my_file.html']);
 ```
 
 ### Bilingual Files
@@ -120,12 +120,12 @@ $jobs = $memsource->jobs()->listJobs($projectUid, ['count' => true, 'filename' =
 #### Download Bilingual File
 
 ```php
-$memsource->BilingualFile()->downloadBilingualFile($projectUid, ['JobUid1', 'jobUid2'], 'download.mxliff');
+$memsource->BilingualFile()->download($projectUid, ['JobUid1', 'jobUid2'], 'download.mxliff');
 ```
 
 #### Upload Bilingual File
 
 ```php
 $parameters = ['format' => 'MXLF', 'saveToTransMemory' => 'None', 'setCompleted' => 'false'];
-$result = $api->bilingualFile()->uploadBilingualFile('upload.mxliff', $parameters);
+$result = $api->bilingualFile()->upload('upload.mxliff', $parameters);
 ```

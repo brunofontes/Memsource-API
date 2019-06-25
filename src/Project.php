@@ -19,7 +19,7 @@ class Project extends \BrunoFontes\Memsource\BaseApi
      *
      * @return string The JSON answer from Memsource
      */
-    public function listProjects(array $queryParams = []): string
+    public function list(array $queryParams = []): string
     {
         return $this->fetchApi->fetch('get', $this->_url, $queryParams);
     }
@@ -31,7 +31,7 @@ class Project extends \BrunoFontes\Memsource\BaseApi
      *
      * @return string A json string with all project info
      */
-    public function getProject(string $projectUid): string
+    public function get(string $projectUid): string
     {
         return $this->fetchApi->fetch('get', "{$this->_url}/{$projectUid}");
     }

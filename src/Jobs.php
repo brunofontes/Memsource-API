@@ -10,7 +10,6 @@ namespace BrunoFontes\Memsource;
 
 class Jobs extends \BrunoFontes\Memsource\BaseApi
 {
-
     /**
      * List jobs of a project
      * The API request returns a MAX of 50 Jobs.
@@ -21,7 +20,7 @@ class Jobs extends \BrunoFontes\Memsource\BaseApi
      *
      * @return string The JSON answer from Memsource
      */
-    public function listJobs(string $projectUid, array $parameters = []): string
+    public function list(string $projectUid, array $parameters = []): string
     {
         $url = "/api2/v2/projects/{$projectUid}/jobs";
         return $this->fetchApi->fetch('get', $url, $parameters);
