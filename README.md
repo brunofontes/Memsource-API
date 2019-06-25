@@ -90,7 +90,7 @@ Safely store this `$token` with the related user data and use it to instantiate 
 To list all projects:
 
 ```php
-$projectList = $memsource->project()->listProjects;
+$projectList = $memsource->project()->list;
 ```
 
 To use filters, add the API filter as parameter:
