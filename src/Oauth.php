@@ -1,23 +1,24 @@
 <?php
 /**
  * A very compact and simple Memsource API library
- * 
+ *
  * @author Bruno Fontes <developer@brunofontes.net>
  * @link   https://github.com/brunofontes
  */
+
 namespace BrunoFontes\Memsource;
 
-class Oauth extends \BrunoFontes\Memsource
+class Oauth extends \BrunoFontes\Memsource\FetchApi
 {
     private $_url = '/oauth';
-    
+
     /**
      * Get the URL to generate the Authorization Code from Memsource
      *
      * @param string $client_id     Memsource client ID
      * @param string $client_secret Memsource client secret
      * @param string $callback_uri  URL that Memsource will redirect to
-     * 
+     *
      * @return string the authorization code
      */
     public function getAuthorizationCodeUrl(string $client_id, string $callback_uri)
@@ -37,10 +38,7 @@ class Oauth extends \BrunoFontes\Memsource
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => $content
         ];
-        $response = $this->curl($token_url, $params);
-        if ($respose['error']) {
-            throw new Exception("Error getting access token", 1);
-        }
+        $response = json_decode($this->curl($token_url, $params), true);
         return $response['access_token'];
     }
 }
