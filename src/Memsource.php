@@ -8,9 +8,15 @@
 
 namespace BrunoFontes;
 
+use \BrunoFontes\Memsource\BilingualFile;
+use \BrunoFontes\Memsource\FetchApi;
+use \BrunoFontes\Memsource\Jobs;
+use \BrunoFontes\Memsource\Oauth;
+use \BrunoFontes\Memsource\Project;
+
 /**
  * Memsource API class
- * 
+ *
  * Instructions: https://github.com/brunofontes/Memsource-API/
  * Memsource API details: https://cloud.memsource.com/web/docs/api
  */
@@ -24,47 +30,46 @@ class Memsource
 
     public function __construct(string $token = null, string $memsourceBaseUrl = 'https://cloud.memsource.com/web')
     {
-        $this->_fetchApi = new \BrunoFontes\Memsource\FetchApi($token, $memsourceBaseUrl);
+        $this->_fetchApi = new FetchApi($token, $memsourceBaseUrl);
     }
 
     /**
      * Memsource Oauth functions
      *
-     * @return \BrunoFontes\Memsource\Oauth
+     * @return Oauth
      */
-    public function oauth(): \BrunoFontes\Memsource\Oauth
+    public function oauth(): Oauth
     {
-        return $this->_oauth ?? $this->_oauth = new \BrunoFontes\Memsource\oauth();
+        return $this->_oauth ?? $this->_oauth = new oauth($this->_fetchApi);
     }
 
     /**
      * Memsource API BilingualFile related functions
      *
-     * @return \BrunoFontes\Memsource\BilingualFile
+     * @return BilingualFile
      */
-    public function bilingualFile(): \BrunoFontes\Memsource\BilingualFile
+    public function bilingualFile(): BilingualFile
     {
-        return $this->_bilingualFile ?? $this->_bilingualFile = new \BrunoFontes\Memsource\BilingualFile($this->_fetchApi);
+        return $this->_bilingualFile ?? $this->_bilingualFile = new BilingualFile($this->_fetchApi);
     }
 
     /**
      * Memsource API Jobs related functions
      *
-     * @return \BrunoFontes\Memsource\Jobs
+     * @return Jobs
      */
-    public function jobs(): \BrunoFontes\Memsource\Jobs
+    public function jobs(): Jobs
     {
-        return $this->_jobs ?? $this->_jobs = new \BrunoFontes\Memsource\Jobs($this->_fetchApi);
+        return $this->_jobs ?? $this->_jobs = new Jobs($this->_fetchApi);
     }
-
 
     /**
      * Memsource API Project related functions
      *
-     * @return \BrunoFontes\Memsource\Project
+     * @return Project
      */
-    public function project(): \BrunoFontes\Memsource\Project
+    public function project(): Project
     {
-        return $this->_project ?? $this->_project = new \BrunoFontes\Memsource\Project($this->_fetchApi);
+        return $this->_project ?? $this->_project = new Project($this->_fetchApi);
     }
 }

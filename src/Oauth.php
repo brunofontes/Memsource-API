@@ -8,7 +8,7 @@
 
 namespace BrunoFontes\Memsource;
 
-class Oauth extends \BrunoFontes\Memsource\FetchApi
+class Oauth extends \BrunoFontes\Memsource\BaseApi
 {
     private $_url = '/oauth';
 
@@ -23,8 +23,16 @@ class Oauth extends \BrunoFontes\Memsource\FetchApi
      */
     public function getAuthorizationCodeUrl(string $client_id, string $callback_uri)
     {
-        $authorize_url = $this->base_url . $this->_url . '/authorize';
-        return $authorize_url . '?response_type=code&client_id=' . $client_id . '&redirect_uri=' . $callback_uri . '&scope=openid';
+        $authorize_url = $this->fetchApi->getBase_url() . $this->_url . '/authorize';
+        $parambeters = http_build_query(
+            [
+                "response_type" => 'code',
+                "client_id" => $client_id,
+                "redirect_uri" => $callback_uri,
+                "scope" => 'openid'
+            ]
+        );
+        return "{$authorize_url}?{$parambeters}";
     }
 
     public function getAccessToken(string $authorization_code, string $client_id, string $client_secret, string $callback_uri)
@@ -38,7 +46,12 @@ class Oauth extends \BrunoFontes\Memsource\FetchApi
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => $content
         ];
-        $response = json_decode($this->curl($token_url, $params), true);
+        $response = json_decode($this->fetchApi->fetch('raw', $token_url, $params), true);
+
+        if (isset($response['error'])) {
+            throw new \Exception("Error getting TOKEN: " . $response['error_description'], 1);
+        }
+
         return $response['access_token'];
     }
 }

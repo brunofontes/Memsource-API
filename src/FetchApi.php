@@ -11,6 +11,11 @@ class FetchApi
 {
     protected $base_url;
     protected $token;
+
+    public function getBase_url()
+    {
+        return $this->base_url;
+    }
     
     /**
      * BaseAPI needs at least the Memsource Token to use it's API
@@ -18,7 +23,7 @@ class FetchApi
      * @param string $token
      * @param string $memsourceBaseUrl [Optional] A non-standard Memsource URL base for the API to work
      */
-    public function __construct(string $token = null, string $memsourceBaseUrl = 'https://cloud.memsource.com/web')
+    public function __construct(string $token = null, string $memsourceBaseUrl)
     {
         $this->base_url = $memsourceBaseUrl;
         $this->token = $token;
@@ -27,7 +32,7 @@ class FetchApi
     /**
      * Fetch API data using curl
      *
-     * @param string $method     Should be 'get', 'post', 'jsonPost' or 'download'
+     * @param string $method     Should be 'get', 'put', 'post', 'jsonPost', 'download' or 'raw'
      * @param string $url        The api url
      * @param array  $parameters Array ['key' => 'value'] of get or post fields or structured array for json requests
      * @param string $filename   [optional] Specified file in which the download request will be saved
@@ -63,6 +68,9 @@ class FetchApi
             }
             $setopt = $this->getDownloadFileParam($filename)
                     + $this->getJsonPostParam($parameters);
+            break;
+        case 'raw':
+            $setopt = $parameters;
             break;
         default:
             throw new \Exception("Method {$method} is invalid on Fetch", 1);
