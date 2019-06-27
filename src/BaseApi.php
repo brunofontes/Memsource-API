@@ -15,4 +15,15 @@ class BaseApi
     {
         $this->fetchApi = $fetchApi;
     }
+
+    protected function hasError(string $jsonResponse): bool
+    {
+        return isset(json_decode($jsonResponse, true)['errorCode']);
+    }
+
+    protected function getError(string $jsonResponse): string
+    {
+        return json_decode($jsonResponse, true)['errorDescription'];
+    }
+
 }

@@ -31,12 +31,17 @@ class BilingualFile extends \BrunoFontes\Memsource\BaseApi
     public function download(string $projectUid, array $jobUids, string $filename): array
     {
         $url = "/api2/v1/projects/{$projectUid}/jobs/bilingualFile";
+        $filenames = [];
 
         $groupedJobUids = array_chunk($jobUids, 100);
         for ($i = 0; $i < count($groupedJobUids); $i++) {
             $apiReadyArray = $this->_convertUidArrayToApiRequest($groupedJobUids[$i]);
             $filenames[$i] = count($groupedJobUids) > 1 ? "{$i}_{$filename}" : $filename;
             $filecontent = $this->fetchApi->fetch('jsonPost', $url, $apiReadyArray);
+            if ($this->hasError($filecontent)) {
+                $errorMsg = $this->getError($filecontent);
+                throw new \Exception("Error downloading file: {$errorMsg}", 1);
+            }
             $this->_saveIntoFile($filenames[$i], $filecontent);
         }
         return $filenames;
@@ -80,10 +85,17 @@ class BilingualFile extends \BrunoFontes\Memsource\BaseApi
     public function upload(string $filename, array $params): string
     {
         $urlParams = http_build_query($params);
-        $fileContent = file_get_contents($filename);
-        if ($fileContent === false) {
-            throw new \Exception('File for upload inexistent or invalid', 1);
+        try {
+            $fileContent = file_get_contents($filename);
+        } catch (\Exception $e) {
+            throw new \Exception('File for upload inexistent or invalid: ' . $filename, 1);
         }
-        return $this->fetchApi->fetch('put', $this->_url . "?{$urlParams}", [$fileContent]);
+
+        $response = $this->fetchApi->fetch('put', $this->_url . "?{$urlParams}", [$fileContent]);
+
+        if ($this->hasError($response)) {
+            throw new \Exception("Error uploading file {$filename}: " . $this->getError($response), 1);
+        }
+        return $response;
     }
 }

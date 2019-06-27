@@ -21,7 +21,11 @@ class Project extends \BrunoFontes\Memsource\BaseApi
      */
     public function list(array $queryParams = []): string
     {
-        return $this->fetchApi->fetch('get', $this->_url, $queryParams);
+        $response =  $this->fetchApi->fetch('get', $this->_url, $queryParams);
+        if ($this->hasError($response)) {
+            throw new \Exception("Error listing projects: " . $this->getError($response), 1);
+        }
+        return $response;
     }
 
     /**
@@ -33,6 +37,9 @@ class Project extends \BrunoFontes\Memsource\BaseApi
      */
     public function get(string $projectUid): string
     {
-        return $this->fetchApi->fetch('get', "{$this->_url}/{$projectUid}");
+        $response = $this->fetchApi->fetch('get', "{$this->_url}/{$projectUid}");
+        if ($this->hasError($response)) {
+            throw new \Exception("Error getting project {$projectUid}: " . $this->getError($response), 1);
+        }
     }
 }

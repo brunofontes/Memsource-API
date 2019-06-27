@@ -23,6 +23,10 @@ class Jobs extends \BrunoFontes\Memsource\BaseApi
     public function list(string $projectUid, array $parameters = []): string
     {
         $url = "/api2/v2/projects/{$projectUid}/jobs";
-        return $this->fetchApi->fetch('get', $url, $parameters);
+        $response =  $this->fetchApi->fetch('get', $url, $parameters);
+        if ($this->hasError($response)) {
+            throw new \Exception("Error listing projects: " . $this->getError($response), 1);
+        }
+        return $response;
     }
 }

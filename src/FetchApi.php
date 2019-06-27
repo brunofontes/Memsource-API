@@ -39,28 +39,42 @@ class FetchApi
         $setopt = [];
         switch ($method) {
         case 'get':
+            $this->checkAccessToken();
             $parameters = http_build_query($parameters);
             $url = $url . ($parameters ? '?'.$parameters : '');
             break;
         case 'put':
+            $this->checkAccessToken();
             $setopt = $this->getPutParam()+$this->getPostParam(implode("", $parameters));
             break;
         case 'post':
+            $this->checkAccessToken();
             $parameters = http_build_query($parameters);
             $setopt = $setopt + $this->getPostParam($parameters);
             break;
         case 'jsonPost':
+            $this->checkAccessToken();
             $setopt = $this->getJsonPostParam($parameters);
             break;
         case 'download':
+            $this->checkAccessToken();
             if (empty($filename)) {
                 throw new Exception('You need to specify a filename to download a file.', 1);
             }
             $setopt = $this->getDownloadFileParam($filename)
                     + $this->getJsonPostParam($parameters);
             break;
+        default:
+            throw new \Exception("Method {$method} is invalid on Fetch", 1);
         }
         return $this->curl($url, $setopt);
+    }
+
+    private function checkAccessToken()
+    {
+        if (empty($this->token)) {
+            throw new \Exception("Missing Access Token", 1);
+        }
     }
 
     private function getDownloadFileParam(string $filename)
@@ -98,10 +112,10 @@ class FetchApi
     protected function curl(string $url, array $curl_extra_setopt = [])
     {
         if (empty($url)) {
-            throw new Exception('URL not defined', 1);
+            throw new \Exception('URL not defined', 1);
         }
 
-        $header = $this->token ? ["Authorization: Bearer {$this->token}"] : [];
+        $header = ($this->token ? ["Authorization: Bearer {$this->token}"] : []);
         $header = array_merge($header, $curl_extra_setopt[CURLOPT_HTTPHEADER]??[]);
         $curl_setopt = [
             CURLOPT_URL => $this->base_url . $url,
