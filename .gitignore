@@ -3,3 +3,4 @@ tags
 vendor/
 .php_cs.cache
 *.mxliff
+composer.lock
