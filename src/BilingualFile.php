@@ -30,13 +30,16 @@ class BilingualFile extends \BrunoFontes\Memsource\BaseApi
      */
     public function download(string $projectUid, array $jobUids, string $filename): array
     {
-        $url = "/api2/v1/projects/{$projectUid}/jobs/bilingualFile";
+        $fileExtension = pathinfo($filename)['extension'];
+        $fileNoExtension = basename($filename,'.'.$fileExtension);
+;
+        $url = "/api2/v1/projects/{$projectUid}/jobs/bilingualFile?format=" . strtoupper($fileExtension);
         $filenames = [];
 
         $groupedJobUids = array_chunk($jobUids, 100);
         for ($i = 0; $i < count($groupedJobUids); $i++) {
             $apiReadyArray = $this->_convertUidArrayToApiRequest($groupedJobUids[$i]);
-            $filenames[$i] = count($groupedJobUids) > 1 ? "{$i}_{$filename}" : $filename;
+            $filenames[$i] = count($groupedJobUids) > 1 ? "{$fileNoExtension}_{$i}.{$fileExtension}" : $filename;
             $filecontent = $this->fetchApi->fetch('jsonPost', $url, $apiReadyArray);
             if ($this->hasError($filecontent)) {
                 $errorMsg = $this->getError($filecontent);
