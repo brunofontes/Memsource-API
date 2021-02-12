@@ -12,4 +12,22 @@ final class JobsTest extends TestCase
         $this->expectException(\Exception::class);
         $api->jobs()->list('invalidProjectUid', []);
     }
+
+    public function testDownloadTargetFileReturnsNull()
+    {
+        $api = new Memsource('fakeToken');
+        $this->assertEquals(
+            null,
+            $api->jobs()->downloadTargetFile('projUid', 'jobUid', 'filename.xliff')
+        );
+    }
+
+    public function testDownloadOriginalFileReturnsNull()
+    {
+        $api = new Memsource('fakeToken');
+        $this->assertEquals(
+            null,
+            $api->jobs()->downloadOriginalFile('projUid', 'jobUid', 'filename.xliff')
+        );
+    }
 }
