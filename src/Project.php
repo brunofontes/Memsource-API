@@ -42,4 +42,19 @@ class Project extends \BrunoFontes\Memsource\BaseApi
             throw new \Exception("Error getting project {$projectUid}: " . $this->getError($response), 1);
         }
     }
+
+    /**
+     * Edit the project status
+     *
+     * @param string $projectUid The project UID
+     * @param string $status The new status
+     */
+    public function editStatus(string $projectUid, string $status): void
+    {
+        $queryParam = ['status' => $status];
+        $response = $this->fetchApi->fetch('jsonPost', "{$this->_url}/{$projectUid}/setStatus", $queryParam);
+        if ($this->hasError($response)) {
+            throw new \Exception("Error editing project status on project: {$projectUid}: " . $this->getError($response), 1);
+        }
+    }
 }
