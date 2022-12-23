@@ -45,7 +45,7 @@ class BilingualFile extends \BrunoFontes\Memsource\BaseApi
                 $errorMsg = $this->getError($filecontent);
                 throw new \Exception("Error downloading file: {$errorMsg}", 1);
             }
-            $this->_saveIntoFile($filenames[$i], $filecontent);
+            Helper::saveIntoFile($filenames[$i], $filecontent);
         }
         return $filenames;
     }
@@ -64,17 +64,6 @@ class BilingualFile extends \BrunoFontes\Memsource\BaseApi
             $convertedArray[] = ['uid' => $jobUid];
         }
         return ['jobs' => $convertedArray];
-    }
-
-    private function _saveIntoFile(string $filename, string $filecontent): void
-    {
-        try {
-            $f = fopen($filename, 'w+');
-            fwrite($f, $filecontent);
-            fclose($f);
-        } catch (\Exception $e) {
-            throw new \Exception("File could not be saved: {$e->error}", 1);
-        }
     }
 
     /**
