@@ -8,3 +8,6 @@ install:
 uninstall:
 	rm -f ./.git/hooks/pre-push
 	if [ -d "./vendor/phpunit" ] ; then composer remove --dev phpunit/phpunit; fi
+
+check:
+	gaze '{src,tests}/**/*.php' -c "./vendor/phpunit/phpunit/phpunit --bootstrap vendor/autoload.php tests --testdox --color"
