@@ -13,6 +13,8 @@ use \BrunoFontes\Memsource\FetchApi;
 use \BrunoFontes\Memsource\Jobs;
 use \BrunoFontes\Memsource\Oauth;
 use \BrunoFontes\Memsource\Project;
+use \BrunoFontes\Memsource\TM;
+use \BrunoFontes\Memsource\Async;
 
 /**
  * Memsource API class
@@ -26,6 +28,8 @@ class Memsource
     private $_bilingualFile;
     private $_jobs;
     private $_project;
+    private $_tm;
+    private $_async;
     private $_fetchApi;
 
     public function __construct(string $token = null, string $memsourceBaseUrl = 'https://cloud.memsource.com/web')
@@ -71,5 +75,25 @@ class Memsource
     public function project(): Project
     {
         return $this->_project ?? $this->_project = new Project($this->_fetchApi);
+    }
+
+    /**
+     * Memsource API Async related functions
+     *
+     * @return Async
+     */
+    public function async(): Async
+    {
+        return $this->_async ?? $this->_async = new Async($this->_fetchApi);
+    }
+
+    /**
+     * Memsource API TM related functions
+     *
+     * @return TM
+     */
+    public function tm(): TM
+    {
+        return $this->_tm ?? $this->_tm = new TM($this->_fetchApi);
     }
 }
