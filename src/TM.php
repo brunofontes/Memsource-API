@@ -27,7 +27,7 @@ class TM extends \BrunoFontes\Memsource\BaseApi
      */
     public function list(array $queryParams = []): string
     {
-        $response = $this->fetchApi->fetch('get', $this->_url, $queryParams);
+        $response = $this->fetchApi->fetch('get', '/api2/v1/transMemories/', $queryParams);
         if ($this->hasError($response)) {
             throw new \Exception("Error listing TMs: " . $this->getError($response), 1);
         }
